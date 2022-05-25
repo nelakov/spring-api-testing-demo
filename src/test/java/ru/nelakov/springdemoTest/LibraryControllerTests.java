@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.nelakov.springdemolibrarywithapitests.domain.Authors;
 import ru.nelakov.springdemolibrarywithapitests.domain.BooksInfo;
+import specs.Specification;
 
 import java.util.Date;
 import java.util.Optional;
@@ -18,17 +19,16 @@ import static io.restassured.http.ContentType.JSON;
 import static listeners.CustomAllureListener.withCustomTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LibraryControllerTests {
+public class LibraryControllerTests extends Specification {
 
     @Test
     @Story("Library")
     @DisplayName("Get all books in library test")
     void libraryGetAllTest() {
         BooksInfo[] booksInfos =
-                given()
-                        .filter(withCustomTemplates())
+                booksRequestSpec
                         .when()
-                        .get("books/getAll")
+                        .get("/getAll")
                         .then()
                         .log().body()
                         .statusCode(200)
@@ -56,14 +56,10 @@ public class LibraryControllerTests {
     @ParameterizedTest(name = "Check books for existent author \"{0}\"")
     void getBookByAuthorTest(Authors authors) {
         BooksInfo[] booksInfos =
-                given()
-                        .filter(withCustomTemplates())
-                        .contentType(JSON)
+                booksRequestSpec
                         .body(authors)
-                        .log().uri()
-                        .log().body()
                         .when()
-                        .post("books/getBookInfoListByAuthor")
+                        .post("/getBookInfoListByAuthor")
                         .then()
                         .log().body()
                         .statusCode(200)
@@ -93,14 +89,10 @@ public class LibraryControllerTests {
     @ParameterizedTest(name = "Check put books in library \"{0}\"")
     void putBookTest(BooksInfo booksInfo) {
         BooksInfo newBook =
-                given()
-                        .filter(withCustomTemplates())
-                        .contentType(JSON)
+                booksRequestSpec
                         .body(booksInfo)
-                        .log().uri()
-                        .log().body()
                         .when()
-                        .post("/books/putBook")
+                        .post("/putBook")
                         .then()
                         .statusCode(200)
                         .log().body()
@@ -125,14 +117,10 @@ public class LibraryControllerTests {
     @MethodSource(value = "argumentsForPostBookNegativeTest")
     @ParameterizedTest(name = "Check books for non-existent author \"{0}\"")
     void getBookByAuthorNegativeTest(Authors authors) {
-        given()
-                .filter(withCustomTemplates())
-                .contentType(JSON)
+        booksRequestSpec
                 .body(authors)
-                .log().uri()
-                .log().body()
                 .when()
-                .post("books/getBookInfoListByAuthor")
+                .post("/getBookInfoListByAuthor")
                 .then()
                 .log().body()
                 .statusCode(404);

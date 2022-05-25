@@ -35,10 +35,14 @@ public class LibraryController {
     @PostMapping("books/getBookInfoListByAuthor")
     @ApiOperation("Get books by Author")
     public List<BooksInfo> getBookInfoListByAuthor(@RequestBody Authors author) {
-        if (books.stream().filter(booksInfo -> booksInfo.getAuthor().equals(author.getAuthorName())).collect(Collectors.toList()).isEmpty()) {
+        if (books.stream().filter(booksInfo -> booksInfo.getAuthor()
+                .equals(author.getAuthorName()))
+                .collect(Collectors.toList()).isEmpty()) {
         throw new InvalidAuthorException(HttpStatus.NOT_FOUND);
         } else {
-            return books.stream().filter(booksInfo -> booksInfo.getAuthor().equals(author.getAuthorName())).collect(Collectors.toList());
+            return books.stream().filter(booksInfo -> booksInfo.getAuthor()
+                    .equals(author.getAuthorName()))
+                    .collect(Collectors.toList());
         }
     }
 
