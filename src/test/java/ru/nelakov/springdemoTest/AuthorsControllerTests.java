@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.nelakov.springdemolibrarywithapitests.domain.Authors;
+import specs.Specification;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,19 +16,18 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static listeners.CustomAllureListener.withCustomTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
 
-public class AuthorsControllerTests {
+public class AuthorsControllerTests extends Specification {
 
     @Test
     @DisplayName("Get all authors test")
     @Story("Authors")
     void authorsGetAllTest() {
         Authors[] authors =
-                given()
-                        .filter(withCustomTemplates())
+                authorsRequestSpec
                         .when()
-                        .get("authors/getAllAuthors")
+                        .get("/getAllAuthors")
                         .then()
                         .log().body()
                         .statusCode(200)
@@ -48,18 +48,15 @@ public class AuthorsControllerTests {
         );
     }
 
-
     @Story("Authors")
     @MethodSource(value = "argumentsForPutAuthor")
     @ParameterizedTest(name = "Check put author to the authors list \"{0}\"")
     void putAuthorTest(Authors author) {
         Authors authors =
-                given()
-                        .filter(withCustomTemplates())
-                        .contentType(JSON)
+                authorsRequestSpec
                         .body(author)
                         .when()
-                        .put("authors/putAuthor")
+                        .put("/putAuthor")
                         .then()
                         .log().body()
                         .statusCode(200)
@@ -81,18 +78,15 @@ public class AuthorsControllerTests {
     @ParameterizedTest(name = "Check search and get author for name \"{0}\"")
     void getAuthorByNamePositive(Authors author) {
         Authors authors =
-                given()
-                        .filter(withCustomTemplates())
+                authorsRequestSpec
                         .body(author)
-                        .contentType(JSON)
                         .when()
-                        .post("authors/getAuthor")
+                        .post("/getAuthor")
                         .then()
                         .log().body()
                         .statusCode(200)
                         .extract()
                         .as(Authors.class);
-
         assertThat(authors.getAuthorName()).isEqualTo(author.getAuthorName());
     }
 
@@ -108,12 +102,10 @@ public class AuthorsControllerTests {
     @ParameterizedTest(name = "Check receive error when get author by non-exist name \"{0}\"")
     void getAuthorByNameNegative(Authors author) {
         Authors authors =
-                given()
-                        .filter(withCustomTemplates())
+                authorsRequestSpec
                         .body(author)
-                        .contentType(JSON)
                         .when()
-                        .post("authors/getAuthor")
+                        .post("/getAuthor")
                         .then()
                         .log().body()
                         .statusCode(404)
