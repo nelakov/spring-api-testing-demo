@@ -1,6 +1,6 @@
 package ru.nelakov.springdemolibrarywithapitests.controller;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.nelakov.springdemolibrarywithapitests.domain.Authors;
@@ -20,7 +20,7 @@ public class AuthorsController {
     );
 
     @GetMapping("authors/getAllAuthors")
-    @ApiOperation("Get all authors")
+    @Operation(summary = "Get all authors")
     public List<Authors> getAllAuthors() {
         List<Authors> result = new ArrayList<>();
         for (Authors authorOutput : authors) {
@@ -30,25 +30,21 @@ public class AuthorsController {
     }
 
     @PostMapping("authors/getAuthor")
-    @ApiOperation("Get author")
+    @Operation(summary = "Get author")
     public Authors getAuthor(@RequestBody Authors author) {
-        Authors result = null;
         if (author == null) {
             throw new NullAuthorException();
-        } else {
-            for (Authors oneOfAuthors : authors) {
-                if (oneOfAuthors.equals(author)) {
-                    result = oneOfAuthors;
-                } else {
-                    throw new InvalidAuthorException(HttpStatus.NOT_FOUND);
-                }
+        }
+        for (Authors oneOfAuthors : authors) {
+            if (oneOfAuthors.equals(author)) {
+                return oneOfAuthors;
             }
         }
-        return result;
+        throw new InvalidAuthorException(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("authors/putAuthor")
-    @ApiOperation("Put author")
+    @Operation(summary = "Put author")
     public Authors putAuthor(@RequestBody Authors newAuthor) {
         return Authors.builder()
                 .authorName(newAuthor.getAuthorName())
