@@ -56,7 +56,7 @@ in memory (no database), which keeps the focus on the parts that matter for a de
 | JSON | **Jackson 3** (`tools.jackson`), `snake_case` |
 | Boilerplate | **Lombok** (via `io.freefair.lombok`) |
 | Logging | **Logback + logstash-logback-encoder 9.0** (structured JSON) |
-| API tests | **REST-assured 6**, **JUnit 5**, **AssertJ** |
+| API tests | **REST-assured 6**, **JUnit Jupiter 6**, **AssertJ 3.27** |
 | Reporting | **Allure 2.35** |
 
 ## Architecture
@@ -72,8 +72,8 @@ HTTP ──▶ RequestIdFilter ──▶ @RestController ──▶ in-memory dat
 
 - **`controller/`** — `LibraryController` (`/books/**`), `AuthorsController` (`/authors/**`). Paths
   are declared per-method; springdoc derives the OpenAPI spec from the handlers.
-- **`domain/`** — `BooksInfo`, `Authors`, `BooksData`: Lombok `@Builder`/`@Data` POJOs with
-  `@JsonNaming(SnakeCaseStrategy)`.
+- **`domain/`** — `BooksInfo`, `Authors`: Lombok `@Builder`/`@Data` POJOs with
+  `@JsonNaming(SnakeCaseStrategy)`. (`BooksData` also lives here but is currently unused.)
 - **`exception/`** — `InvalidAuthorException` (→ `404`), `NullAuthorException`, mapped to HTTP status.
 - **`web/RequestIdFilter`** — a `OncePerRequestFilter` that puts a validated correlation id into the MDC.
 
@@ -100,10 +100,10 @@ All bodies are JSON in `snake_case`.
 |---|---|---|---|---|
 | `GET`  | `/books/getAll` | List all books | — | `200` |
 | `POST` | `/books/getBookInfoListByAuthor` | Books by author | `{ "author_name": "Mark Tven" }` | `200` / `404` if none |
-| `POST` | `/books/putBook` | Add a book | `BooksInfo` | `200` |
+| `POST` | `/books/putBook` | Validate & echo a book (no persistence) | `BooksInfo` | `200` |
 | `GET`  | `/authors/getAllAuthors` | List all authors | — | `200` |
 | `POST` | `/authors/getAuthor` | Find an author by name | `{ "author_name": "Nikolai Gogol" }` | `200` / `404` if not found |
-| `PUT`  | `/authors/putAuthor` | Add an author | `{ "author_name": "Joshua Bloch" }` | `200` |
+| `PUT`  | `/authors/putAuthor` | Validate & echo an author (no persistence) | `{ "author_name": "Joshua Bloch" }` | `200` |
 
 > **Correlation:** every response carries an `X-Request-Id` header. Send your own (a safe token,
 > ≤ 64 chars of `[A-Za-z0-9_-]`) to thread it through the logs, or let the service mint a UUID.
