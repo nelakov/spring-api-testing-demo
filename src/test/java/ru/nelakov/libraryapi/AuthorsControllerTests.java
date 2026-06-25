@@ -1,4 +1,4 @@
-package ru.nelakov.springdemoTest;
+package ru.nelakov.libraryapi;
 
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
@@ -6,17 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.nelakov.springdemolibrarywithapitests.domain.Authors;
-import specs.Specification;
+import ru.nelakov.libraryapi.domain.Authors;
+import ru.nelakov.libraryapi.specs.Specification;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static listeners.CustomAllureListener.withCustomTemplates;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
+
 
 public class AuthorsControllerTests extends Specification {
 

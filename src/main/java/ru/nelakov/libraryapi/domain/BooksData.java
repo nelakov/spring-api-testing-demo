@@ -1,4 +1,4 @@
-package ru.nelakov.springdemolibrarywithapitests.domain;
+package ru.nelakov.libraryapi.domain;
 
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;
@@ -14,9 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class BooksInfo {
+public class BooksData {
 
-    private String title;
     private String author;
     private String bookName;
     private Integer pages;

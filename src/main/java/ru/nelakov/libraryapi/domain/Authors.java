@@ -1,4 +1,4 @@
-package ru.nelakov.springdemolibrarywithapitests.domain;
+package ru.nelakov.libraryapi.domain;
 
 import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.annotation.JsonNaming;

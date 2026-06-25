@@ -1,4 +1,4 @@
-package ru.nelakov.springdemolibrarywithapitests.exception;
+package ru.nelakov.libraryapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

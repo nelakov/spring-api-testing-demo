@@ -1,6 +1,6 @@
 <div align="center">
 
-# Spring Demo Library — REST API & API Test Suite
+# Spring API Testing Demo — REST API & REST-assured Test Suite
 
 A small, production-shaped **Spring Boot** service for a books-and-authors "library", paired with a
 **black-box REST-assured** test suite and **Allure** reporting. Built to demonstrate clean API design,
@@ -8,7 +8,7 @@ structured observability, and a credible automated-testing workflow on a modern 
 
 ![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?logo=springboot&logoColor=white)
-![Gradle](https://img.shields.io/badge/Gradle-9.5.1-02303A?logo=gradle&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-9.6.0-02303A?logo=gradle&logoColor=white)
 ![REST Assured](https://img.shields.io/badge/REST--assured-6.0-43A047)
 ![Allure](https://img.shields.io/badge/Allure-2.35-FF6A00)
 ![Tests](https://img.shields.io/badge/tests-16%2F16%20passing-brightgreen)
@@ -51,7 +51,7 @@ in memory (no database), which keeps the focus on the parts that matter for a de
 |---|---|
 | Language / Runtime | **Java 25** (Gradle toolchain) |
 | Framework | **Spring Boot 4.1.0** (Spring Framework 7, Jakarta EE) |
-| Build | **Gradle 9.5.1** (wrapper) |
+| Build | **Gradle 9.6.0** (wrapper) |
 | API docs | **springdoc-openapi 3.0.3** → OpenAPI 3.1 + Swagger UI |
 | JSON | **Jackson 3** (`tools.jackson`), `snake_case` |
 | Boilerplate | **Lombok** (via `io.freefair.lombok`) |
@@ -174,7 +174,7 @@ Prefer human-readable logs while developing locally:
 ```
 src/
 ├── main/
-│   ├── java/ru/nelakov/springdemolibrarywithapitests/
+│   ├── java/ru/nelakov/libraryapi/
 │   │   ├── controller/   # LibraryController, AuthorsController
 │   │   ├── domain/       # BooksInfo, Authors, BooksData (Lombok)
 │   │   ├── exception/    # mapped to HTTP status
@@ -183,9 +183,9 @@ src/
 │       ├── application.properties   # Jackson snake_case
 │       └── logback-spring.xml       # JSON / human-logs profiles
 └── test/
-    ├── java/specs/                  # shared REST-assured RequestSpecifications
-    ├── java/listeners/              # Allure attachment templates
-    └── java/ru/nelakov/springdemoTest/  # JUnit 5 + AssertJ tests
+    └── java/ru/nelakov/libraryapi/      # JUnit 5 + AssertJ tests (AuthorsControllerTests, LibraryControllerTests)
+        ├── specs/                       # shared REST-assured RequestSpecifications
+        └── listeners/                   # Allure attachment templates
 ```
 
 ## Conventions & Design Notes
