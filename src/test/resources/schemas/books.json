@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["title", "author", "book_name", "pages", "publish_date"],
+    "properties": {
+      "title": { "type": "string" },
+      "author": { "type": "string" },
+      "book_name": { "type": "string" },
+      "pages": { "type": "integer" },
+      "publish_date": { "type": "string", "format": "date" }
+    }
+  }
+}

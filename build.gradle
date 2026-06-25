@@ -3,7 +3,6 @@ plugins {
     id 'org.springframework.boot' version '4.1.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'io.qameta.allure' version '4.1.0'
-    id 'io.freefair.lombok' version '9.5.0'
 }
 
 group = 'ru.nelakov'
@@ -20,7 +19,6 @@ repositories {
 }
 
 def allureVersion = "2.35.2",
-    selenideVersion = "7.16.2",
     restAssuredVersion = "6.0.0"
 
 allure {
@@ -42,23 +40,19 @@ dependencies {
 
     implementation(
             'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-validation',
             'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3',
             'net.logstash.logback:logstash-logback-encoder:9.0'
     )
 
     testImplementation(
             'org.springframework.boot:spring-boot-starter-test',
-            "com.codeborne:selenide:$selenideVersion",
-            "io.qameta.allure:allure-selenide:$allureVersion",
             "io.qameta.allure:allure-rest-assured:$allureVersion",
             "io.rest-assured:rest-assured:$restAssuredVersion",
             "io.rest-assured:json-schema-validator:$restAssuredVersion",
             'org.junit.jupiter:junit-jupiter-api',
             'org.junit.jupiter:junit-jupiter-params',
-            'org.assertj:assertj-core',
-            'org.aeonbits.owner:owner:1.0.12',
-            'org.slf4j:slf4j-simple',
-            'commons-io:commons-io:2.18.0'
+            'org.assertj:assertj-core'
     )
 }
 
