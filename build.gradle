@@ -18,12 +18,13 @@ repositories {
     mavenCentral()
 }
 
-def allureVersion = "2.35.2",
+def allureVersion = "2.35.2",          // allure-java adapters (allure-junit5, allure-rest-assured)
+    allureReportVersion = "2.43.0",    // allure2 CLI / report generator — a separate release train
     restAssuredVersion = "6.0.0"
 
 allure {
     report {
-        version.set(allureVersion)
+        version.set(allureReportVersion)
     }
     adapter {
         autoconfigure.set(true)
