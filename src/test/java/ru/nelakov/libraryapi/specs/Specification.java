@@ -1,10 +1,7 @@
-package specs;
-
-import io.restassured.RestAssured;
+package ru.nelakov.libraryapi.specs;
 import io.restassured.specification.RequestSpecification;
-import listeners.CustomAllureListener;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import ru.nelakov.libraryapi.listeners.CustomAllureListener;
+
 
 import static io.restassured.RestAssured.with;
 import static io.restassured.http.ContentType.JSON;

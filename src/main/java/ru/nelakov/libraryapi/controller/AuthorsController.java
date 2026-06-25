@@ -1,11 +1,11 @@
-package ru.nelakov.springdemolibrarywithapitests.controller;
+package ru.nelakov.libraryapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.nelakov.springdemolibrarywithapitests.domain.Authors;
-import ru.nelakov.springdemolibrarywithapitests.exception.InvalidAuthorException;
-import ru.nelakov.springdemolibrarywithapitests.exception.NullAuthorException;
+import ru.nelakov.libraryapi.domain.Authors;
+import ru.nelakov.libraryapi.exception.InvalidAuthorException;
+import ru.nelakov.libraryapi.exception.NullAuthorException;
 
 import java.util.ArrayList;
 import java.util.List;
