@@ -1,4 +1,4 @@
-package ru.nelakov.springdemolibrarywithapitests.web;
+package ru.nelakov.libraryapi.web;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;

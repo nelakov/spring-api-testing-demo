@@ -1,12 +1,12 @@
-package ru.nelakov.springdemolibrarywithapitests;
+package ru.nelakov.libraryapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringDemoLibraryWithApiTestsApplication {
+public class LibraryApiApplication {
 
     static void main(String[] args) {
-        SpringApplication.run(SpringDemoLibraryWithApiTestsApplication.class, args);
+        SpringApplication.run(LibraryApiApplication.class, args);
     }
 }
