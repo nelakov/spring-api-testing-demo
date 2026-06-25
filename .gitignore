@@ -31,3 +31,6 @@ out/
 
 ### Claude Code ###
 CLAUDE.md
+
+### Local review artifacts (kept locally, not committed) ###
+reviews/
