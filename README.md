@@ -1,10 +1,10 @@
 <div align="center">
 
-# Spring API Testing Demo — REST API & REST-assured Test Suite
+# Spring API Testing Demo
 
-A small, production-shaped **Spring Boot** service for a books-and-authors "library", paired with a
-**black-box REST-assured** test suite and **Allure** reporting. Built to demonstrate clean API design,
-structured observability, and a credible automated-testing workflow on a modern JVM stack.
+A small **Spring Boot** service for a books-and-authors "library", paired with a
+**black-box REST-assured** test suite and **Allure** reporting. Data is in-memory (no database),
+so the focus stays on the API and the tests.
 
 ![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?logo=springboot&logoColor=white)
@@ -17,31 +17,14 @@ structured observability, and a credible automated-testing workflow on a modern 
 
 ---
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [API Reference](#api-reference)
-- [Interactive API Docs (Swagger / OpenAPI)](#interactive-api-docs-swagger--openapi)
-- [Testing](#testing)
-- [Observability — Structured Logging](#observability--structured-logging)
-- [Project Layout](#project-layout)
-- [Conventions & Design Notes](#conventions--design-notes)
-
----
-
 ## Overview
 
-The service exposes a tiny domain — **books** and **authors** — over a JSON HTTP API. Data is held
-in memory (no database), which keeps the focus on the parts that matter for a demo of this kind:
+The service exposes two resources, **books** and **authors**, over a JSON HTTP API. What it shows:
 
-- **API design & contract** — predictable resources, `snake_case` JSON, correct status codes.
-- **Self-documentation** — OpenAPI 3.1 served live via springdoc, browsable in Swagger UI.
-- **Automated testing** — a behaviour-first REST-assured suite that exercises the running service
-  exactly as a client would.
-- **Observability** — JSON logs with per-request correlation IDs, ready for log aggregation.
+- API design: predictable resources, `snake_case` JSON, correct status codes.
+- Self-documentation: OpenAPI 3.1 served live via springdoc, browsable in Swagger UI.
+- Testing: a behaviour-first REST-assured suite that exercises the running service the way a client would.
+- Observability: JSON logs with a per-request correlation id.
 
 ![Service starting](images/launch-service.png)
 
@@ -61,29 +44,29 @@ in memory (no database), which keeps the focus on the parts that matter for a de
 
 ## Architecture
 
-A conventionally layered web service — `Controller → Service → Repository` over an in-memory store,
-with a servlet filter for cross-cutting request correlation.
+Conventionally layered: `Controller → Service → Repository` over an in-memory store, with a
+servlet filter for request correlation.
 
 ```
-HTTP ─▶ RequestIdFilter ─▶ @RestController ─▶ @Service ─▶ @Repository (in-memory)
-       (X-Request-Id → MDC)  (Author/Book)    (business)   (ConcurrentHashMap)
+HTTP -> RequestIdFilter -> @RestController -> @Service -> @Repository (in-memory)
+        (X-Request-Id -> MDC)  (Author/Book)   (business)  (ConcurrentHashMap)
 ```
 
-- **`controller/`** — `AuthorController` (`/api/v1/authors`), `BookController` (`/api/v1/books`):
-  class-level `@RequestMapping`, `GET` for reads, `POST` → `201 Created` + `Location`. springdoc
+- **`controller/`**: `AuthorController` (`/api/v1/authors`), `BookController` (`/api/v1/books`).
+  Class-level `@RequestMapping`, `GET` for reads, `POST` returns `201 Created` + `Location`. springdoc
   derives the OpenAPI spec from the handlers.
-- **`service/`** — `AuthorService`, `BookService`: business logic and structured logging.
-- **`repository/`** — `AuthorRepository`, `BookRepository`: thread-safe in-memory stores (`ConcurrentHashMap`).
-- **`domain/`** — `Author`, `Book`: immutable Java `record`s with `@JsonNaming(SnakeCaseStrategy)`.
-- **`dto/`** — `AuthorRequest`, `BookRequest`: validated request records (Jakarta Bean Validation).
-- **`exception/`** — `ResourceNotFoundException` (→ `404`), `ResourceAlreadyExistsException` (→ `409`),
-  and `GlobalExceptionHandler` (`@RestControllerAdvice` → RFC 9457 `ProblemDetail`).
-- **`web/RequestIdFilter`** — a `OncePerRequestFilter` that puts a validated correlation id into the MDC.
+- **`service/`**: `AuthorService`, `BookService`. Business logic and structured logging.
+- **`repository/`**: `AuthorRepository`, `BookRepository`. Thread-safe in-memory stores (`ConcurrentHashMap`).
+- **`domain/`**: `Author`, `Book`. Immutable Java `record`s with `@JsonNaming(SnakeCaseStrategy)`.
+- **`dto/`**: `AuthorRequest`, `BookRequest`. Validated request records (Jakarta Bean Validation).
+- **`exception/`**: `ResourceNotFoundException` (`404`), `ResourceAlreadyExistsException` (`409`),
+  and `GlobalExceptionHandler` (`@RestControllerAdvice`, RFC 9457 `ProblemDetail`).
+- **`web/RequestIdFilter`**: a `OncePerRequestFilter` that puts a validated correlation id into the MDC.
 
 ## Quick Start
 
 **Prerequisite:** JDK 25 on `PATH` (or pointed to via `JAVA_HOME`). Everything else comes through the
-Gradle wrapper — no local Gradle install needed.
+Gradle wrapper, so no local Gradle install is needed.
 
 ```bash
 # Run the API (http://localhost:8080)
@@ -101,37 +84,37 @@ All bodies are JSON in `snake_case`.
 
 | Method | Path | Description | Body | Success |
 |---|---|---|---|---|
-| `GET`  | `/api/v1/books` | List books (optional `?author=`) | — | `200` |
-| `GET`  | `/api/v1/books/{bookName}` | Get one book | — | `200` / `404` |
+| `GET`  | `/api/v1/books` | List books (optional `?author=`) | - | `200` |
+| `GET`  | `/api/v1/books/{bookName}` | Get one book | - | `200` / `404` |
 | `POST` | `/api/v1/books` | Create a book | `BookRequest` | `201` + `Location` / `400` / `409` |
-| `GET`  | `/api/v1/authors` | List all authors | — | `200` |
-| `GET`  | `/api/v1/authors/{name}` | Get one author | — | `200` / `404` |
+| `GET`  | `/api/v1/authors` | List all authors | - | `200` |
+| `GET`  | `/api/v1/authors/{name}` | Get one author | - | `200` / `404` |
 | `POST` | `/api/v1/authors` | Create an author | `{ "name": "Joshua Bloch" }` | `201` + `Location` / `400` / `409` |
 
 Errors are returned as RFC 9457 `application/problem+json`.
 
 > **Correlation:** every response carries an `X-Request-Id` header. Send your own (a safe token,
-> ≤ 64 chars of `[A-Za-z0-9_-]`) to thread it through the logs, or let the service mint a UUID.
+> up to 64 chars of `[A-Za-z0-9_-]`) to thread it through the logs, or let the service mint a UUID.
 
 ## Interactive API Docs (Swagger / OpenAPI)
 
 With the app running:
 
-- **Swagger UI** → http://localhost:8080/swagger-ui.html
-- **OpenAPI 3.1 JSON** → http://localhost:8080/v3/api-docs
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI 3.1 JSON**: http://localhost:8080/v3/api-docs
 
 ![Swagger UI](images/swagger-view.png)
 
 ## Testing
 
 The suite is **black-box**: REST-assured drives real HTTP against a running instance on
-`localhost:8080` — there is no embedded test context. **Start the app first**, then run the tests.
+`localhost:8080`, with no embedded test context. **Start the app first**, then run the tests.
 
 ```bash
-# Terminal 1 — start the service
+# Terminal 1: start the service
 ./gradlew bootRun
 
-# Terminal 2 — run the suite (16 tests)
+# Terminal 2: run the suite (16 tests)
 ./gradlew clean test
 ```
 
@@ -141,9 +124,9 @@ Run in parallel by passing a thread count:
 ./gradlew clean test -Dthreads=4
 ```
 
-**Coverage** — list, filter, get-by-id and create for both resources, plus the error paths:
+**Coverage:** list, filter, get-by-id and create for both resources, plus the error paths:
 `404` (unknown id, as `ProblemDetail`), `409` (duplicate), `400` (validation, incl. slash-in-id),
-empty-filter `200`, JSON-schema validation, and a `snake_case` wire-format assertion. All **16 tests pass**.
+empty-filter `200`, JSON-schema validation, and a `snake_case` wire-format assertion. All 16 tests pass.
 
 ### Allure report
 
@@ -158,11 +141,11 @@ empty-filter `200`, JSON-schema validation, and a `snake_case` wire-format asser
 
 </div>
 
-## Observability — Structured Logging
+## Observability (structured logging)
 
-Logs are **JSON by default** (`logstash-logback-encoder`), one event per line, ready to ship to a log
-backend. A `requestId` field — sourced from the inbound `X-Request-Id` or a generated UUID — is
-promoted onto every event so a single request can be traced end to end.
+Logs are **JSON by default** (`logstash-logback-encoder`), one event per line. A `requestId` field,
+taken from the inbound `X-Request-Id` or a generated UUID, is added to every event so a single request
+can be traced end to end.
 
 ```json
 {"@timestamp":"2026-06-12T03:33:05.46+04:00","level":"INFO","logger_name":"…service.BookService",
@@ -199,11 +182,11 @@ src/
 
 ## Conventions & Design Notes
 
-- **`snake_case` everywhere.** Boot 4 **and** REST-assured 6 both run on **Jackson 3**. The DTO
+- **`snake_case` everywhere.** Boot 4 and REST-assured 6 both run on Jackson 3. The DTO
   `@JsonNaming` annotations target `tools.jackson`, and `spring.jackson.property-naming-strategy=SNAKE_CASE`
-  is set globally — keeping client and server in lockstep. (A stray Jackson-2 `@JsonNaming` is silently
-  ignored under Jackson 3 — the classic cause of `null` fields after a major upgrade.)
+  is set globally, keeping client and server in lockstep. (A stray Jackson-2 `@JsonNaming` is silently
+  ignored under Jackson 3, the classic cause of `null` fields after a major upgrade.)
 - **Dates** serialize as ISO-8601 strings (Boot's default), e.g. `"publish_date":"1970-01-01T00:20:34.567Z"`.
-- **Tests favour behaviour over implementation** — they assert observable HTTP responses, not internals.
+- **Tests favour behaviour over implementation:** they assert observable HTTP responses, not internals.
   As an integration suite they require a live server; unit/slice coverage of the controllers would be the
   natural next layer (see Fowler's test pyramid).
