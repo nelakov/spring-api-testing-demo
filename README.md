@@ -185,7 +185,7 @@ src/
 - **`snake_case` everywhere.** Boot 4 and REST-assured 6 both run on Jackson 3. The DTO
   `@JsonNaming` annotations target `tools.jackson`, and `spring.jackson.property-naming-strategy=SNAKE_CASE`
   is set globally, keeping client and server in lockstep. (A stray Jackson-2 `@JsonNaming` is silently
-  ignored under Jackson 3, the classic cause of `null` fields after a major upgrade.)
+  ignored under Jackson 3, which is the classic cause of `null` fields after a major upgrade.)
 - **Dates** serialize as ISO-8601 strings (Boot's default), e.g. `"publish_date":"1970-01-01T00:20:34.567Z"`.
 - **Tests favour behaviour over implementation:** they assert observable HTTP responses, not internals.
   As an integration suite they require a live server; unit/slice coverage of the controllers would be the
